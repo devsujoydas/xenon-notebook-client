@@ -16,11 +16,12 @@ const SignUp = () => {
 
   const submitHandler = async (data) => {
     setLoading(true);
-    const email = data.email
     const name = data.name
+    const email = data.email
     const password = data.password
+    console.log(data)
     try {
-      await signup(email, name, password)
+      await signup(name, email, password)
       navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.message || "Registration failed");

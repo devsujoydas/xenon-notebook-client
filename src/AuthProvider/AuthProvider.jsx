@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../services/api";
 import { toast } from "react-hot-toast";
-import Swal from "sweetalert2";
 
 const AuthContext = createContext();
 
@@ -12,21 +11,32 @@ export const AuthProvider = ({ children }) => {
   const fetchProfile = async () => {
     try {
       const { data } = await api.get("/users/profile");
-      setUser(data);
-    } catch {
+      if (data && data._id) {
+        setUser(data);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        console.warn("User not logged in or unauthorized");
+      } else {
+        console.error("Error fetching profile:", error.message);
+      }
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
+
   const login = async (email, password) => {
     try {
       const { data } = await api.post(
-        "/users/signin", { email, password },
+        "/auth/signin", { email, password },
       );
-      setUser(data.user);
       toast.success("Logged in successfully");
+      localStorage.setItem("accessToken", data.accessToken)
+      setUser(data.user);
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }
@@ -34,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     try {
-      const { data } = await api.post("/users/register", { name, email, password });
+      const { data } = await api.post("/auth/signup", { name, email, password });
       toast.success("Account created successfully");
       setUser(data.user);
     } catch (error) {
@@ -44,8 +54,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post("/users/logout")
+      await api.post("/auth/logout")
       toast.success("Logged out successfully");
+      localStorage.clear()
       setUser(null);
     } catch {
       toast.error("Logout failed");

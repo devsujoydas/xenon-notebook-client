@@ -44,6 +44,7 @@ export default function NoteView() {
 
   useEffect(() => {
     fetchNote();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!note)

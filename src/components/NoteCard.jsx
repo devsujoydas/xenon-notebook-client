@@ -6,7 +6,12 @@ export default function NoteCard({ note, onDelete }) {
   return (
     <div className="border border-zinc-200 rounded-lg p-4 shadow-sm hover:shadow-md transition bg-white cursor-pointer flex flex-col justify-between">
       <div onClick={() => navigate(`/note/${note._id}`)}>
-        <h3 className="text-lg font-semibold">{note.title}</h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">{note.title}</h3>
+          <p className="text-sm text-gray-500">
+            {new Date(note.createdAt).toLocaleString()}
+          </p>
+        </div>
         <p className="text-sm text-gray-600 mt-2 line-clamp-3">{note.content}</p>
       </div>
       <div className="flex gap-2 mt-3">
