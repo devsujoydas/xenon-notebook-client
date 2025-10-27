@@ -1,0 +1,258 @@
+/**
+Notes App (single-file React component)
+
+Features:
+- Save, edit, delete personal notes (persisted to localStorage)
+- Routing with react-router-dom (List, Create, Edit, View)
+- Tailwind CSS for styling
+- react-hot-toast for notifications
+
+How to use:
+1. Create a React app (e.g. using Vite or CRA).
+2. Install deps: react-router-dom, react-hot-toast, and set up Tailwind CSS.
+   npm install react-router-dom react-hot-toast
+3. Add this file (NotesApp.jsx) and import it in your entry (index.jsx):
+   import NotesApp from './NotesApp';
+   <NotesApp />
+
+This single file exports a default App component that contains routes and components.
+
+*/
+
+import React, { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+import { Toaster, toast } from 'react-hot-toast';
+
+// Simple id generator
+const genId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
+// Local storage helpers
+const STORAGE_KEY = 'notes_app_v1';
+const loadNotes = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('Failed to load notes', e);
+    return [];
+  }
+};
+const saveNotes = (notes) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+};
+
+function Header() {
+  return (
+    <header className="bg-indigo-600 text-white p-4">
+      <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <Link to="/" className="text-2xl font-semibold">
+          NotesApp
+        </Link>
+        <nav className="space-x-3">
+          <Link to="/" className="px-3 py-1 rounded hover:bg-indigo-500">All Notes</Link>
+          <Link to="/new" className="px-3 py-1 rounded bg-white text-indigo-600 font-medium">New Note</Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function NoteCard({ note, onDelete }) {
+  const navigate = useNavigate();
+  return (
+    <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition cursor-pointer bg-white">
+      <div onClick={() => navigate(`/note/${note.id}`)}>
+        <h3 className="text-lg font-semibold">{note.title || 'Untitled'}</h3>
+        <p className="text-sm text-gray-600 mt-2 line-clamp-3">{note.content || '—'}</p>
+      </div>
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => navigate(`/edit/${note.id}`)}
+          className="px-3 py-1 rounded border hover:bg-gray-50"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => onDelete(note.id)}
+          className="px-3 py-1 rounded border text-red-600 hover:bg-red-50"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [notes, setNotes] = useState(() => loadNotes());
+
+  useEffect(() => {
+    saveNotes(notes);
+  }, [notes]);
+
+  const addNote = (note) => {
+    setNotes((p) => [note, ...p]);
+    toast.success('Note saved');
+  };
+  const updateNote = (id, updated) => {
+    setNotes((p) => p.map((n) => (n.id === id ? { ...n, ...updated, updatedAt: Date.now() } : n)));
+    toast.success('Note updated');
+  };
+  const deleteNote = (id) => {
+    const ok = window.confirm('Delete this note?');
+    if (!ok) return;
+    setNotes((p) => p.filter((n) => n.id !== id));
+    toast.success('Note deleted');
+  };
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-gray-50">
+        <Toaster position="top-right" />
+        <Header />
+        <main className="max-w-4xl mx-auto p-6">
+          <Routes>
+            <Route path="/" element={<NoteList notes={notes} onDelete={deleteNote} />} />
+            <Route path="/new" element={<NoteEditor onSave={addNote} />} />
+            <Route path="/edit/:id" element={<NoteEditor notes={notes} onSave={updateNote} />} />
+            <Route path="/note/:id" element={<NoteView notes={notes} onDelete={deleteNote} />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  );
+}
+
+function NoteList({ notes, onDelete }) {
+  const [query, setQuery] = useState('');
+  const filtered = notes.filter((n) => (n.title + ' ' + n.content).toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-semibold">All Notes</h2>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search notes..."
+          className="border rounded px-3 py-2"
+        />
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="text-center py-20 bg-white rounded shadow">No notes yet — create one.</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {filtered.map((note) => (
+            <NoteCard key={note.id} note={note} onDelete={onDelete} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NoteEditor({ notes = [], onSave }) {
+  const params = useParams();
+  const navigate = useNavigate();
+  const editingId = params.id;
+  const existing = notes.find((n) => n.id === editingId) || { title: '', content: '' };
+
+  const [title, setTitle] = useState(existing.title);
+  const [content, setContent] = useState(existing.content);
+
+  useEffect(() => {
+    // When navigating directly to edit route, populate fields
+    setTitle(existing.title || '');
+    setContent(existing.content || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingId]);
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (!title.trim() && !content.trim()) {
+      toast.error('Cannot save empty note');
+      return;
+    }
+
+    if (editingId) {
+      onSave(editingId, { title: title.trim(), content: content.trim() });
+    } else {
+      const note = {
+        id: genId(),
+        title: title.trim(),
+        content: content.trim(),
+        createdAt: Date.now(),
+      };
+      onSave(note);
+    }
+    navigate('/');
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+      <h2 className="text-xl font-semibold mb-4">{editingId ? 'Edit Note' : 'New Note'}</h2>
+      <form onSubmit={handleSave} className="space-y-4">
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
+          className="w-full border rounded px-3 py-2"
+        />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Write your note..."
+          rows={10}
+          className="w-full border rounded px-3 py-2"
+        />
+        <div className="flex gap-2">
+          <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded">Save</button>
+          <button type="button" onClick={() => navigate(-1)} className="px-4 py-2 border rounded">Cancel</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function NoteView({ notes, onDelete }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const note = notes.find((n) => n.id === id);
+
+  if (!note) {
+    return (
+      <div className="text-center py-20 bg-white rounded shadow">Note not found.</div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+      <div className="flex justify-between items-start">
+        <div>
+          <h2 className="text-2xl font-semibold">{note.title || 'Untitled'}</h2>
+          <p className="text-sm text-gray-500">Created: {new Date(note.createdAt).toLocaleString()}</p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={() => navigate(`/edit/${note.id}`)} className="px-3 py-1 border rounded">Edit</button>
+          <button onClick={() => onDelete(note.id)} className="px-3 py-1 border text-red-600">Delete</button>
+        </div>
+      </div>
+      <div className="mt-6 whitespace-pre-wrap">{note.content}</div>
+    </div>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className="text-center py-20 bg-white rounded shadow">Page not found.</div>
+  );
+}
