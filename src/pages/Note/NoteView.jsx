@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 export default function NoteView() {
   const { id } = useParams();
@@ -51,7 +52,11 @@ export default function NoteView() {
     return <div className="text-center py-20 bg-white rounded shadow">Loading...</div>;
 
   return (
-    <div className="bg-white p-6 rounded shadow">
+    <motion.div 
+    initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+    className="bg-white p-6 rounded shadow">
       <div className="flex justify-between items-start">
         <div>
           <h2 className="text-2xl font-semibold">{note.title}</h2>
@@ -75,6 +80,6 @@ export default function NoteView() {
         </div>
       </div>
       <div className="mt-6 whitespace-pre-wrap">{note.content}</div>
-    </div>
+    </motion.div>
   );
 }

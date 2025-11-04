@@ -1,85 +1,53 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import api from "../services/api";
-import { toast } from "react-hot-toast";
+// src/AuthProvider/AuthProvider.jsx
+import { createContext, useContext, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "../services/api"; 
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
+  const [user, setUser] = useState(null);
+ 
   const fetchProfile = async () => {
-    try {
-      const { data } = await api.get("/users/profile");
-      if (data && data._id) {
-        setUser(data);
-      } else {
+    const { data } = await api.get("/users/profile");
+    setUser(data)
+    return data;
+  };
+ 
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile"],
+    queryFn: fetchProfile,
+    retry: false, 
+    refetchOnWindowFocus: false,
+    onError: (err) => {
+      if (err.response?.status === 401) {
+        console.warn("User unauthorized, skipping profile fetch");
         setUser(null);
       }
-    } catch (error) {
-      if (error.response?.status === 401) {
-        console.warn("User not logged in or unauthorized");
-      } else {
-        console.error("Error fetching profile:", error.message);
-      }
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
 
-  const login = async (email, password) => {
-    try {
-      const { data } = await api.post(
-        "/auth/signin", { email, password },
-      );
-      toast.success("Logged in successfully");
-      localStorage.setItem("accessToken", data.accessToken)
-      setUser(data.user);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
-    }
-  };
-
-  const signup = async (name, email, password) => {
-    try {
-      const { data } = await api.post("/auth/signup", { name, email, password });
-      toast.success("Account created successfully");
-      setUser(data.user);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Signup failed");
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await api.post("/auth/logout")
-      toast.success("Logged out successfully");
-      localStorage.clear()
-      setUser(null);
-    } catch {
-      toast.error("Logout failed");
-    }
-  };
 
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   const value = {
     user,
-    login,
-    signup,
-    logout,
-    loading,
+    setUser,
+    loading: isLoading,
     isAuthenticated: !!user,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!isLoading && children}
+    </AuthContext.Provider>
+  );
 };
 
-
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

@@ -19,7 +19,7 @@ export default function NoteEditor() {
 
   useEffect(() => {
     fetchNote();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleSubmit = async (e) => {
@@ -37,40 +37,42 @@ export default function NoteEditor() {
   };
 
   return (
-    <div className="p-6 rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">
-        {id ? "Edit Note" : "New Note"}
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-          className="w-full border border-zinc-200 outline-none rounded px-3 py-2"
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Write your note..."
-          rows={10}
-          className="w-full border border-zinc-200 outline-none rounded px-3 py-2"
-        />
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded cursor-pointer"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="px-4 py-2 border border-zinc-300 hover:bg-zinc-100 rounded cursor-pointer"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+    <div className="w-main min-h-[79dvh] py-6 ">
+      <div className="p-6 rounded shadow">
+        <h2 className="text-xl font-semibold mb-4">
+          {id ? "Edit Note" : "New Note"}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Title"
+            className="w-full border border-zinc-200 outline-none rounded px-3 py-2"
+          />
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write your note..."
+            rows={10}
+            className="w-full border border-zinc-200 outline-none rounded px-3 py-2"
+          />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded cursor-pointer"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 border border-zinc-300 hover:bg-zinc-100 rounded cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

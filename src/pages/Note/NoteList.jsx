@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { useEffect, useState } from "react"; 
 import Swal from "sweetalert2";
 import api from "../../services/api";
 import NoteCard from "../../components/NoteCard";
+import toast from "react-hot-toast";
 
 export default function NoteList() {
   const [notes, setNotes] = useState([]);
@@ -50,8 +50,7 @@ export default function NoteList() {
   );
 
   return (
-    <div className="">
-      <Toaster />
+    <div className="w-main min-h-[79dvh] py-6 "> 
       <div className="flex justify-between items-center mb-6 ">
         <h2 className="text-2xl font-semibold">All Notes</h2>
         <input

@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function NoteCard({ note, onDelete }) {
   const navigate = useNavigate();
 
   return (
-    <div className="border border-zinc-200 rounded-lg p-4 shadow-sm hover:shadow-md transition bg-white cursor-pointer flex flex-col justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="border border-zinc-200 rounded-lg p-4 shadow-sm hover:shadow-md transition bg-white cursor-pointer flex flex-col justify-between">
       <div onClick={() => navigate(`/note/${note._id}`)}>
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">{note.title}</h3>
@@ -28,6 +33,6 @@ export default function NoteCard({ note, onDelete }) {
           Delete
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
