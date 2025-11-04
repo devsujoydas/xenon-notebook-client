@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from "axios";
 
 const api = axios.create({
@@ -20,50 +19,50 @@ function onRefreshed(token) {
   refreshSubscribers = [];
 }
 
-api.interceptors.response.use(
-  (res) => res,
-  async (err) => {
-    const originalRequest = err.config;
+// api.interceptors.response.use(
+//   (res) => res,
+//   async (err) => {
+//     const originalRequest = err.config;
 
-    if (
-      (err.response?.status === 401 || err.response?.status === 403) &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
+//     if (
+//       (err.response?.status === 401 || err.response?.status === 403) &&
+//       !originalRequest._retry
+//     ) {
+//       originalRequest._retry = true;
 
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          refreshSubscribers.push((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
-            resolve(api(originalRequest));
-          });
-        });
-      }
+//       if (isRefreshing) {
+//         return new Promise((resolve) => {
+//           refreshSubscribers.push((token) => {
+//             originalRequest.headers["Authorization"] = `Bearer ${token}`;
+//             resolve(api(originalRequest));
+//           });
+//         });
+//       }
 
-      isRefreshing = true;
-      try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/auth/refresh",
-          { withCredentials: true }
-        );
+//       isRefreshing = true;
+//       try {
+//         const { data } = await axios.get(
+//           "http://localhost:5000/api/auth/refresh",
+//           { withCredentials: true }
+//         );
 
-        const newToken = data.accessToken;
-        localStorage.setItem("accessToken", newToken);
-        api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
-        onRefreshed(newToken);
+//         const newToken = data.accessToken;
+//         localStorage.setItem("accessToken", newToken);
+//         api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+//         onRefreshed(newToken);
 
-        return api(originalRequest);
-      } catch (refreshError) {
-        localStorage.removeItem("accessToken");
-        window.location.href = "/signin";
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         localStorage.removeItem("accessToken");
+//         window.location.href = "/signin";
+//         return Promise.reject(refreshError);
+//       } finally {
+//         isRefreshing = false;
+//       }
+//     }
 
-    return Promise.reject(err);
-  }
-);
+//     return Promise.reject(err);
+//   }
+// );
 
 export default api;

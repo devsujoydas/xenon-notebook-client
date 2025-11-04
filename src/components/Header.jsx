@@ -22,7 +22,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-indigo-600 text-white py-4 md:py-6 shadow-md">
+    <header className="bg-black text-white py-4 md:py-6 shadow-md">
       <div className="w-main mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="md:text-2xl text-xl font-semibold">
@@ -36,13 +36,13 @@ export default function Header() {
               <span className="mr-4 font-medium">Hi, {user.name}</span>
               <Link
                 to="/note"
-                className="px-3 py-2 rounded hover:bg-indigo-500 transition-all"
+                className="px-3 py-2 rounded hover:bg-white hover:text-black active:scale-95 transition-all"
               >
                 All Notes
               </Link>
               <Link
                 to="/new"
-                className="px-3 py-2 rounded bg-white text-indigo-600 font-medium hover:scale-105 transition-transform duration-200"
+                className="px-3 py-2 rounded bg-white hover:bg-black hover:text-white active:scale-95 text-black font-medium hover:scale-105 transition-transform duration-200"
               >
                 New Note
               </Link>
@@ -57,13 +57,13 @@ export default function Header() {
             <>
               <Link
                 to="/signin"
-                className="px-3 py-2 rounded hover:bg-indigo-500 transition-all"
+                className="px-3 py-2 rounded hover:bg-white hover:text-black transition-all"
               >
                 Sign In
               </Link>
               <Link
                 to="/signup"
-                className="px-3 py-2 rounded hover:bg-indigo-500 transition-all"
+                className="px-3 py-2 rounded hover:bg-white hover:text-black transition-all"
               >
                 Sign Up
               </Link>

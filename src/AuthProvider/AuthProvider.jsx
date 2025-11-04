@@ -1,4 +1,5 @@
-// src/AuthProvider/AuthProvider.jsx
+/* eslint-disable no-unused-vars */
+
 import { createContext, useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../services/api"; 
@@ -50,4 +51,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

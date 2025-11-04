@@ -7,13 +7,14 @@ import SignIn from "../pages/Auth/SignIn";
 import ProtectedRoute from "./ProtectedRoute";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import Home from "../pages/Home/Home";
+import AuthProtectedRoute from "./AuthProtectedRoute";
  
 export default function Router() {
     return (
         <Routes> 
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/signin" element={<AuthProtectedRoute><SignIn /></AuthProtectedRoute>} />
+            <Route path="/signup" element={<AuthProtectedRoute><SignUp /></AuthProtectedRoute>} />
+            <Route path="/reset-password" element={<AuthProtectedRoute><ResetPassword /></AuthProtectedRoute>} />
           
             <Route
                 path="/"
