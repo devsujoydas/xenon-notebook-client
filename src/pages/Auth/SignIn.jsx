@@ -37,7 +37,7 @@ const SignIn = () => {
       exit={{ opacity: 0, y: -10 }}
       className="h-[80dvh] w-full flex justify-center items-center"
     > 
-      <div className="bg-white w-[420px] p-5 md:p-8 rounded-xl shadow-lg">
+      <div className="bg-white w-[420px] p-5 md:p-8 rounded-xl shadow-lg mx-3 md:mx-0">
         <div className="text-black text-center mb-5">
           <div className="border w-fit bg-black p-2 rounded-full mx-auto">
             <User className="text-white" />
@@ -45,7 +45,7 @@ const SignIn = () => {
           <h1 className="md:text-3xl mt-3 font-semibold">Sign In</h1>
         </div>
 
-        <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
+        <form onSubmit={handleSubmit(submitHandler)} className="space-y-4 ">
           {/* Email */}
           <div className="relative">
             <label className="text-slate-800 text-sm font-medium mb-1 block">Email</label>

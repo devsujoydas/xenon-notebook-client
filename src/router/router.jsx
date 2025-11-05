@@ -8,6 +8,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import Home from "../pages/Home/Home";
 import AuthProtectedRoute from "./AuthProtectedRoute";
+import Profile from "../pages/MyAccount/Profile/Profile";
  
 export default function Router() {
     return (
@@ -19,6 +20,10 @@ export default function Router() {
             <Route
                 path="/"
                 element={<Home />}
+            />
+            <Route
+                path="/profile" 
+                element={<ProtectedRoute><Profile /></ProtectedRoute>}
             />
             <Route
                 path="/note"

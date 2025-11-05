@@ -7,5 +7,5 @@
 }
 
 .w-main{
-    @apply max-w-6xl mx-5 md:mx-auto
+    @apply max-w-6xl mx-5 xl:mx-auto
 }

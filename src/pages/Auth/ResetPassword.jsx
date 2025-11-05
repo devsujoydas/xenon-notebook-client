@@ -22,6 +22,7 @@ const ResetPassword = () => {
         watch,
         formState: { errors },
     } = useForm();
+
     const passwordValue = watch("newPassword", "");
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const ResetPassword = () => {
     const verifyToken = async () => {
         try {
             setLoading(true);
-            const { data } = await api.get(`/auth/reset-password?token=${token}`);
+            const { data } = await api.get(`/password/reset-password?token=${token}`);
             if (data.success) {
                 toast.success("Token verified, you can now reset your password!");
                 setValidToken(true);
@@ -47,7 +48,8 @@ const ResetPassword = () => {
     const handleRequestLink = async (data) => {
         setLoading(true);
         try {
-            await api.post("/auth/forgot-password", { email: data.email });
+            await api.post("/password/forgot-password", { email: data.email })
+                .then(res => console.log(res.data))
             toast.success("Reset link sent to your email!");
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to send reset link");
@@ -65,7 +67,7 @@ const ResetPassword = () => {
         try {
             const { newPassword, confirmNewPassword } = data;
             const { data: res } = await api.post(
-                `/auth/reset-password?token=${token}`,
+                `/password  /reset-password?token=${token}`,
                 { newPassword, confirmNewPassword }
             );
             if (res.success) {
@@ -92,7 +94,7 @@ const ResetPassword = () => {
                         ? handleSubmit(handleRequestLink)
                         : handleSubmit(handleResetPassword)
                 }
-                className="bg-white w-full max-w-md p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
+                className="bg-white w-full max-w-md mx-3 md:mx-0 p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
             >
                 {/* ICON */}
                 <div className="mx-auto mb-4 w-12 h-12 flex items-center justify-center rounded-full bg-black">

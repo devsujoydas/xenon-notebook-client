@@ -38,7 +38,7 @@ const SignUp = () => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="h-[80dvh] w-full flex justify-center items-center"
+      className="h-[80dvh] w-full flex justify-center items-center mx-3 md:mx-0"
     > 
       <div className="bg-white w-[420px] p-5 md:p-8 rounded-xl shadow-lg">
         <div className="text-center mb-5">

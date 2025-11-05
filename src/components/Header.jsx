@@ -1,25 +1,17 @@
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "../AuthProvider/AuthProvider";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import api from "../services/api";
-import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header() {
-  const { user, setUser } = useAuth();
+  const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  const logout = async () => {
-    try {
-      await api.post("/auth/logout");
-      localStorage.clear();
-      setUser(null);
-      toast.success("Logged out successfully");
-    } catch (err) {
-      toast.error("Logout failed");
-    }
-  };
+  const linkClass = ({ isActive }) =>
+    isActive
+      ? "px-3 py-2 rounded bg-white active:scale-95 text-black font-medium hover:scale-105 transition-transform duration-200"
+      : "px-3 py-2 rounded hover:bg-white hover:text-black active:scale-95 transition-all";
 
   return (
     <header className="bg-black text-white py-4 md:py-6 shadow-md">
@@ -34,18 +26,15 @@ export default function Header() {
           {user ? (
             <>
               <span className="mr-4 font-medium">Hi, {user.name}</span>
-              <Link
-                to="/note"
-                className="px-3 py-2 rounded hover:bg-white hover:text-black active:scale-95 transition-all"
-              >
+              <NavLink to="/note" className={linkClass}>
                 All Notes
-              </Link>
-              <Link
-                to="/new"
-                className="px-3 py-2 rounded bg-white hover:bg-black hover:text-white active:scale-95 text-black font-medium hover:scale-105 transition-transform duration-200"
-              >
+              </NavLink>
+              <NavLink to="/new" className={linkClass}>
                 New Note
-              </Link>
+              </NavLink>
+              <NavLink to="/profile" className={linkClass}>
+                Profile
+              </NavLink>
               <button
                 onClick={logout}
                 className="px-3 py-2 rounded bg-red-500 hover:bg-red-600 transition-all"
@@ -55,18 +44,12 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link
-                to="/signin"
-                className="px-3 py-2 rounded hover:bg-white hover:text-black transition-all"
-              >
+              <NavLink to="/signin" className={linkClass}>
                 Sign In
-              </Link>
-              <Link
-                to="/signup"
-                className="px-3 py-2 rounded hover:bg-white hover:text-black transition-all"
-              >
+              </NavLink>
+              <NavLink to="/signup" className={linkClass}>
                 Sign Up
-              </Link>
+              </NavLink>
             </>
           )}
         </nav>
@@ -96,18 +79,12 @@ export default function Header() {
                       <span className="px-3 py-2 font-medium border-b border-zinc-200">
                         Hi, {user.name}
                       </span>
-                      <Link
-                        to="/"
-                        className="px-3 py-2 rounded hover:bg-indigo-100 transition-all"
-                      >
+                      <NavLink to="/note" className={linkClass}>
                         All Notes
-                      </Link>
-                      <Link
-                        to="/new"
-                        className="px-3 py-2 rounded hover:bg-indigo-100 transition-all"
-                      >
+                      </NavLink>
+                      <NavLink to="/new" className={linkClass}>
                         New Note
-                      </Link>
+                      </NavLink>
                       <button
                         onClick={logout}
                         className="px-3 py-2 text-white bg-red-500 rounded hover:bg-red-600 transition-all"
@@ -117,18 +94,12 @@ export default function Header() {
                     </>
                   ) : (
                     <>
-                      <Link
-                        to="/signin"
-                        className="px-3 py-2 rounded hover:bg-indigo-100 transition-all"
-                      >
+                      <NavLink to="/signin" className={linkClass}>
                         Sign In
-                      </Link>
-                      <Link
-                        to="/signup"
-                        className="px-3 py-2 rounded hover:bg-indigo-100 transition-all"
-                      >
+                      </NavLink>
+                      <NavLink to="/signup" className={linkClass}>
                         Sign Up
-                      </Link>
+                      </NavLink>
                     </>
                   )}
                 </nav>
