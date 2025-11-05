@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
 import NoteCard from "../../components/NoteCard";
@@ -7,15 +7,20 @@ import toast from "react-hot-toast";
 export default function NoteList() {
   const [notes, setNotes] = useState([]);
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const getNotes = async () => {
-    try {
-      const { data } = await api.get("/notes");
-      setNotes(data);
-    } catch {
-      toast.error("Failed to load notes");
-    }
-  };
+  setLoading(true); // 🔹 Start loading
+  try {
+    const res = await api.get("/notes");
+    setNotes(res.data);
+  } catch (err) {
+    toast.error("Failed to load notes");
+  } finally {
+    setLoading(false); // 🔹 Stop loading
+  }
+};
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -50,7 +55,7 @@ export default function NoteList() {
   );
 
   return (
-    <div className="w-main min-h-[79dvh] py-6 "> 
+    <div className="w-main min-h-[79dvh] py-6 ">
       <div className="flex justify-between items-center mb-6 ">
         <h2 className="text-2xl font-semibold">All Notes</h2>
         <input
@@ -61,17 +66,28 @@ export default function NoteList() {
         />
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded shadow">
-          No notes yet — create one.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {filtered.map((note) => (
-            <NoteCard key={note._id} note={note} onDelete={handleDelete} />
-          ))}
-        </div>
-      )}
+
+      {
+        loading ?
+          <div className="h-[60dvh] flex justify-center items-center">
+            <div className="h-10 w-10 rounded-full border-y-2 animate-spin"></div>
+          </div>
+          :
+          <div>
+            {filtered.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded shadow">
+                No notes yet — create one.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filtered.map((note) => (
+                  <NoteCard key={note._id} note={note} onDelete={handleDelete} />
+                ))}
+              </div>
+            )}
+          </div>
+      }
+
     </div>
   );
 }
