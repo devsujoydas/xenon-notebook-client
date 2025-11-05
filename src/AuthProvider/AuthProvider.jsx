@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 
 import { createContext, useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,8 +18,7 @@ export const AuthProvider = ({ children }) => {
         setUser(data) 
         return data;
       }
-    } catch (error) {
-      console.log(error)
+    } catch (error) { 
     }
   };
 
@@ -42,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   if(isError){
-    console.log(error)
+    // console.log(error)
   }
 
   const logout = async () => {
@@ -71,6 +70,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-// eslint-disable-next-line react-refresh/only-export-components
+ 
 export const useAuth = () => useContext(AuthContext);

@@ -67,6 +67,7 @@ export default function Header() {
           <AnimatePresence>
             {isOpen && (
               <motion.div
+                onClick={() => setIsOpen(!isOpen)}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -84,6 +85,9 @@ export default function Header() {
                       </NavLink>
                       <NavLink to="/new" className={linkClass}>
                         New Note
+                      </NavLink>
+                      <NavLink to="/profile" className={linkClass}>
+                        Profile
                       </NavLink>
                       <button
                         onClick={logout}

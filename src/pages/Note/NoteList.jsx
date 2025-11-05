@@ -11,14 +11,15 @@ export default function NoteList() {
 
 
   const getNotes = async () => {
-  setLoading(true); // 🔹 Start loading
+  setLoading(true);
   try {
     const res = await api.get("/notes");
+    console.log(res.data)
     setNotes(res.data);
   } catch (err) {
     toast.error("Failed to load notes");
   } finally {
-    setLoading(false); // 🔹 Stop loading
+    setLoading(false);
   }
 };
 
@@ -50,6 +51,7 @@ export default function NoteList() {
     getNotes();
   }, []);
 
+  console.log(notes)
   const filtered = notes.filter((n) =>
     (n.title + n.content).toLowerCase().includes(query.toLowerCase())
   );
