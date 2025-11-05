@@ -1,9 +1,9 @@
 import { Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../../AuthProvider/AuthProvider";
+import { useAuth } from "../../AuthProvider/AuthProvider";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
-import api from "../../../services/api";
+import api from "../../services/api";
 
 const UserInformation = () => {
   const { user, setUser } = useAuth();

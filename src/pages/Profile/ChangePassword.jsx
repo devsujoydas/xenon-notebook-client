@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../../AuthProvider/AuthProvider";
+import { useAuth } from "../../AuthProvider/AuthProvider";
 import { toast } from "react-hot-toast";
-import api from "../../../services/api";
+import api from "../../services/api";
 import { Eye, EyeOff, Lock } from "lucide-react";
 
 const ChangePassword = () => {

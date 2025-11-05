@@ -8,7 +8,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import Home from "../pages/Home/Home";
 import AuthProtectedRoute from "./AuthProtectedRoute";
-import Profile from "../pages/MyAccount/Profile/Profile";
+import Profile from "../pages/Profile/Profile";
  
 export default function Router() {
     return (

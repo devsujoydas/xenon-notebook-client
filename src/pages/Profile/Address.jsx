@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import api from "../../../services/api";
-import { useAuth } from "../../../AuthProvider/AuthProvider";
+import api from "../../services/api";
+import { useAuth } from "../../AuthProvider/AuthProvider";
 import { motion } from "framer-motion";
 
 const Address = () => {
