@@ -13,8 +13,7 @@ export default function NoteList() {
   const getNotes = async () => {
   setLoading(true);
   try {
-    const res = await api.get("/notes");
-    console.log(res.data)
+    const res = await api.get("/notes"); 
     setNotes(res.data);
   } catch (err) {
     toast.error("Failed to load notes");
@@ -50,8 +49,7 @@ export default function NoteList() {
   useEffect(() => {
     getNotes();
   }, []);
-
-  console.log(notes)
+ 
   const filtered = notes.filter((n) =>
     (n.title + n.content).toLowerCase().includes(query.toLowerCase())
   );

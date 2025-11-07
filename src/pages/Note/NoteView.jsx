@@ -50,13 +50,13 @@ export default function NoteView() {
 
   if (!note)
     return (
-      <div className="text-center py-32 text-gray-500 font-medium">
+      <div className="text-center h-[70vh] py-32 text-gray-500 font-medium">
         Loading your note...
       </div>
     );
 
   return (
-    <div className="w-main py-20 min-h-[70dvh] flex justify-center">
+    <div className="w-main py-20 h-[70vh] flex justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
